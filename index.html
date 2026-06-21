@@ -76,6 +76,18 @@
   .envelope.go .env-letter{transform:translateY(-130%);z-index:7}
 
   /* ---------- MAIN CONTENT ---------- */
+  /* floating minimalist botanicals */
+  .floaty{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;max-width:480px;left:50%;transform:translateX(-50%)}
+  .floaty .f{position:absolute;top:-40px;opacity:0;color:var(--gold);
+    animation:floatDown linear infinite}
+  .floaty .f svg{display:block;width:100%;height:100%}
+  @keyframes floatDown{
+    0%{transform:translateY(-40px) rotate(0deg);opacity:0}
+    8%{opacity:.5}
+    92%{opacity:.5}
+    100%{transform:translateY(105vh) rotate(360deg);opacity:0}
+  }
+  @media (prefers-reduced-motion:reduce){.floaty{display:none}}
   .content{position:relative;z-index:2;padding:clamp(40px,9vw,60px) 0 90px;text-align:center;
     opacity:0;transition:opacity 1s ease .2s}
   .content.show{opacity:1}
@@ -84,7 +96,7 @@
   .sr.in{opacity:1;transform:translateY(0)}
   .sr.delay1{transition-delay:.12s}
 
-  .content > :not(.imgband){padding-left:clamp(24px,7vw,42px);padding-right:clamp(24px,7vw,42px)}
+  .content > :not(.photosec){padding-left:clamp(24px,7vw,42px);padding-right:clamp(24px,7vw,42px)}
   .eyebrow{font-size:clamp(10px,2.9vw,12px);letter-spacing:.42em;text-transform:uppercase;color:var(--rose-deep);font-weight:400}
 
   .names{margin:clamp(10px,3vw,18px) 0;overflow:hidden}
@@ -103,17 +115,32 @@
   .divider span{height:1px;width:min(80px,22vw);background:linear-gradient(90deg,transparent,var(--rose),transparent)}
   .divider .dot{width:7px;height:7px;border:1px solid var(--rose-deep);transform:rotate(45deg);flex:none;background:var(--rose)}
 
-  /* full-width image banner (fills the column edge to edge) with soft fade */
-  .imgband{position:relative;display:block;width:100%;margin:0;line-height:0;overflow:hidden}
-  .imgband img{width:100%;height:auto;display:block}
-  .imgband .ph{width:100%;aspect-ratio:3/2;background:linear-gradient(160deg,var(--blush-2),var(--cream));
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--mauve)}
-  .imgband .ph svg{width:42px;height:42px;opacity:.5}
-  .imgband .ph span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px}
-  /* soft fade top & bottom so banner melts into page */
-  .imgband::before,.imgband::after{content:"";position:absolute;left:0;right:0;height:26%;pointer-events:none;z-index:2}
-  .imgband::before{top:-1px;background:linear-gradient(to top, rgba(242,241,239,0), var(--blush))}
-  .imgband::after{bottom:-1px;background:linear-gradient(to bottom, rgba(242,241,239,0), var(--blush))}
+
+
+  /* photo section: image as background, text overlaid, edges melt into page */
+  .photosec{position:relative;width:100%;min-height:clamp(420px,108vw,620px);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+    padding:clamp(40px,12vw,70px) clamp(24px,7vw,42px);overflow:hidden}
+  .photosec .bg{position:absolute;inset:0;z-index:0;
+    background-size:cover;background-position:center;
+    -webkit-mask-image:linear-gradient(to bottom, rgba(0,0,0,0) 0%, #000 16%, #000 84%, rgba(0,0,0,0) 100%);
+    mask-image:linear-gradient(to bottom, rgba(0,0,0,0) 0%, #000 16%, #000 84%, rgba(0,0,0,0) 100%)}
+  /* readability scrim over the image */
+  .photosec .bg::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(to bottom, rgba(40,38,35,.30), rgba(40,38,35,.42))}
+  .photosec > *{position:relative;z-index:1}
+  /* text on photos is light */
+  .photosec .eyebrow{color:#F3F1ED}
+  .photosec .name-line{color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.4)}
+  .photosec .amp{color:#EDE6DA}
+  .photosec .date-hero{color:#F3F1ED;text-shadow:0 2px 14px rgba(0,0,0,.4)}
+  .photosec .invite-text,.photosec .lead{color:#F6F4F0;text-shadow:0 2px 16px rgba(0,0,0,.45)}
+  .photosec .lead b{color:#fff}
+  .photosec .wday .en{color:#EDE6DA}
+  .photosec .wday .big-date{color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.4)}
+  .photosec .footnote{color:#fff;text-shadow:0 2px 16px rgba(0,0,0,.45)}
+  .photosec .divider span{background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent)}
+  .photosec .divider .dot{border-color:#fff;background:rgba(255,255,255,.85)}
 
   .invite-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(16px,4.6vw,21px);letter-spacing:.03em;line-height:2.05;color:var(--ink-soft);font-weight:400}
   .lead{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(16px,4.4vw,18px);line-height:2.05;color:var(--ink-soft);margin-top:clamp(20px,5vw,30px);font-weight:400}
@@ -195,35 +222,36 @@
     </div>
   </div>
 
+  <div class="floaty" id="floaty" aria-hidden="true"></div>
+
   <!-- MAIN -->
   <div class="content" id="content">
 
-    <p class="eyebrow sr">Приглашение на свадьбу</p>
-
-    <div class="names">
-      <span class="name-line n1">Имя</span>
-      <span class="amp">&amp;</span>
-      <span class="name-line n2">Имя</span>
-    </div>
-    <p class="date-hero sr">07 июля 2027</p>
-
-    <div class="divider sr"><span></span><i class="dot"></i><span></span></div>
-
-    <!-- IMAGE BANNER 1: couple -->
-    <div class="imgband sr">
-      <img src="photo1.jpg" alt="Молодожёны" loading="lazy">
+    <!-- SECTION 1: photo1 + names + date overlaid -->
+    <div class="photosec sr">
+      <div class="bg" style="background-image:url('photo1.jpg')"></div>
+      <p class="eyebrow">Приглашение на свадьбу</p>
+      <div class="names" style="margin-top:14px">
+        <span class="name-line n1">Имя</span>
+        <span class="amp">&amp;</span>
+        <span class="name-line n2">Имя</span>
+      </div>
+      <p class="date-hero">07 июля 2027</p>
     </div>
 
-    <p class="invite-text sr" style="margin-top:clamp(26px,6vw,36px)">
-      Дорогие родные, близкие и друзья!
-    </p>
-    <p class="lead sr delay1">
-      С большой радостью приглашаем вас разделить с нами
-      самый счастливый день — день нашей свадьбы.
-    </p>
+    <!-- SECTION 2: photo2 + invitation text overlaid -->
+    <div class="photosec sr">
+      <div class="bg" style="background-image:url('photo2.jpg')"></div>
+      <p class="invite-text">Дорогие родные, близкие и друзья!</p>
+      <p class="lead" style="margin-top:18px">
+        С большой радостью приглашаем вас разделить с нами
+        самый счастливый день — день нашей свадьбы.
+      </p>
+    </div>
 
-    <!-- WEDDING DAY -->
-    <div class="block sr">
+    <!-- SECTION 3: photo3 + wedding day date overlaid -->
+    <div class="photosec sr">
+      <div class="bg" style="background-image:url('photo3.jpg')"></div>
       <div class="divider"><span></span><i class="dot"></i><span></span></div>
       <div class="wday">
         <p class="en">Дата торжества</p>
@@ -232,12 +260,7 @@
       <div class="divider"><span></span><i class="dot"></i><span></span></div>
     </div>
 
-    <!-- IMAGE BANNER 2: hands / rings -->
-    <div class="imgband sr block">
-      <img src="photo2.jpg" alt="Руки" loading="lazy">
-    </div>
-
-    <!-- DETAILS -->
+    <!-- DETAILS (on background, not photo) -->
     <div class="block sr">
       <div class="detail"><div class="label">Начало</div><div class="big">18:00</div></div>
       <div class="detail"><div class="label">Место</div><div class="big">Ресторан «Название»</div><div class="sub">Город</div></div>
@@ -247,24 +270,13 @@
       </a>
     </div>
 
-    <!-- IMAGE BANNER 3: silhouette -->
-    <div class="imgband sr block">
-      <img src="photo3.jpg" alt="Пара" loading="lazy">
+    <!-- SECTION 4: photo4 + hosts + closing overlaid -->
+    <div class="photosec sr block">
+      <div class="bg" style="background-image:url('photo4.jpg')"></div>
+      <p class="footnote" style="margin:0">Будем рады видеть вас!</p>
     </div>
 
-    <!-- IMAGE BANNER 4: venue at night -->
-    <div class="imgband sr block">
-      <img src="photo4.jpg" alt="Торжество" loading="lazy">
-    </div>
-
-    <!-- HOSTS -->
-    <div class="block sr">
-      <div class="divider"><span></span><i class="dot"></i><span></span></div>
-      <p class="hosts-sub">Принимающая сторона</p>
-      <p class="hosts-name">Имя — Имя</p>
-    </div>
-
-    <!-- RSVP -->
+    <!-- RSVP (on background) -->
     <div class="block sr">
       <p class="section-label">Подтвердите присутствие</p>
       <div class="rsvp" id="rsvp">
@@ -280,7 +292,7 @@
       </div>
     </div>
 
-    <!-- COUNTDOWN -->
+    <!-- COUNTDOWN (on background) -->
     <div class="block sr">
       <p class="section-label">До торжества осталось</p>
       <div class="countdown">
@@ -290,8 +302,6 @@
         <div class="cd-cell"><div class="cd-num" id="cd-s">—</div><div class="cd-lbl">сек</div></div>
       </div>
     </div>
-
-    <p class="footnote sr">Будем рады видеть вас!</p>
 
   </div>
 </div>
@@ -308,6 +318,36 @@
 <audio id="audio" src="music.mp3" loop preload="auto"></audio>
 
 <script>
+
+  /* floating botanicals */
+  (function(){
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var layer=document.getElementById('floaty');
+    var shapes=[
+      // tiny sprig
+      '<svg viewBox="0 0 24 40" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><path d="M12 2v36"/><path d="M12 10c-4-1-7-4-8-8 4 1 7 4 8 8zM12 16c4-1 7-4 8-8-4 1-7 4-8 8zM12 22c-4-1-7-4-8-8 4 1 7 4 8 8zM12 28c4-1 7-4 8-8-4 1-7 4-8 8z"/></svg>',
+      // small 5-petal flower
+      '<svg viewBox="0 0 24 24" fill="currentColor"><g><ellipse cx="12" cy="5" rx="2.4" ry="4"/><ellipse cx="12" cy="19" rx="2.4" ry="4"/><ellipse cx="5" cy="12" rx="4" ry="2.4"/><ellipse cx="19" cy="12" rx="4" ry="2.4"/></g><circle cx="12" cy="12" r="2.2" fill="#fff" opacity=".7"/></svg>',
+      // single leaf
+      '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C7 6 4 11 4 16c0 4 3 6 8 6s8-2 8-6c0-5-3-10-8-14z" opacity=".85"/><path d="M12 4v16" stroke="#fff" stroke-width="1" opacity=".4"/></svg>',
+      // petal
+      '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c6 4 8 9 8 13 0 5-4 7-8 7s-8-2-8-7c0-4 2-9 8-13z"/></svg>'
+    ];
+    var n=16;
+    for(var i=0;i<n;i++){
+      var f=document.createElement('div');f.className='f';
+      f.innerHTML=shapes[i%shapes.length];
+      var size=10+Math.random()*16;            // 10–26px
+      f.style.width=size+'px';f.style.height=size*1.4+'px';
+      f.style.left=Math.random()*100+'%';
+      var dur=16+Math.random()*16;             // slow: 16–32s
+      f.style.animationDuration=dur+'s';
+      f.style.animationDelay=(-Math.random()*dur)+'s';
+      f.style.opacity=String(.3+Math.random()*.3);
+      layer.appendChild(f);
+    }
+  })();
+
   var RSVP_URL = "https://script.google.com/macros/s/AKfycby1nKTPl4le-kuUoFMbQBReS08jXYwigsINzX5rW-stoiPRLZxW9N-DU4tWRegH1x_xow/exec";
 
   /* envelope open */
