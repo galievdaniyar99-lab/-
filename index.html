@@ -38,53 +38,21 @@
     transition:opacity 1.2s ease, visibility 1.2s ease;
   }
   .env-stage.open{opacity:0;visibility:hidden}
-  .envelope{position:relative;width:min(80vw,340px);aspect-ratio:1.5/1;cursor:pointer;perspective:1400px}
 
-  /* back wall of the envelope */
-  .env-back{position:absolute;inset:0;border-radius:8px;z-index:1;
-    background:linear-gradient(160deg,#EFEBE4,#E2DCD2);
-    box-shadow:0 36px 70px rgba(60,56,52,.30);border:1px solid rgba(110,101,90,.3)}
-
-  /* INVITATION CARD inside the envelope — stays hidden; we use a clean fade transition instead */
-  .env-letter{display:none}
-
-  /* FRONT POCKET — the lower half that the letter tucks behind */
-  .env-front{position:absolute;left:0;right:0;bottom:0;height:58%;z-index:6;
-    background:linear-gradient(160deg,#E7E1D7,#D6CFC2);
-    clip-path:polygon(0 0,50% 42%,100% 0,100% 100%,0 100%);
-    border-radius:0 0 8px 8px;box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
-  /* side seams for depth */
-  .env-front::before{content:"";position:absolute;inset:0;
-    background:linear-gradient(135deg,transparent 49.7%,rgba(110,101,90,.12) 50%),
-              linear-gradient(225deg,transparent 49.7%,rgba(110,101,90,.12) 50%)}
-  /* gold filigree on the pocket */
-  .env-orn{position:absolute;left:50%;bottom:11%;translate:-50% 0;z-index:7;width:62%;height:auto;opacity:.6;color:var(--gold-deep);pointer-events:none}
-  .env-orn svg{width:100%;height:auto;display:block}
-
-  /* TOP FLAP — opens upward */
-  .env-flap{position:absolute;left:0;right:0;top:0;height:54%;z-index:8;transform-origin:top center;
-    background:linear-gradient(180deg,#E2DCD2,#D2CABD);
-    clip-path:polygon(0 0,100% 0,50% 100%);
-    box-shadow:0 4px 10px rgba(60,56,52,.12);
-    transition:transform 1.5s cubic-bezier(.4,.05,.2,1);backface-visibility:hidden}
-  .env-flap::after{content:"";position:absolute;left:18%;right:18%;top:8%;height:2px;
-    background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.5}
-
-  /* WAX SEAL */
-  .env-seal{position:absolute;left:50%;top:48%;translate:-50% -50%;z-index:9;
-    width:62px;height:62px;border-radius:50%;
-    background:radial-gradient(circle at 38% 32%,var(--rose),var(--rose-deep));
-    display:grid;place-items:center;box-shadow:0 6px 16px rgba(60,56,52,.4),inset 0 0 0 2px rgba(255,255,255,.18);
-    transition:opacity .6s,transform .6s}
-  .env-seal svg{width:30px;height:30px;color:#FBF7F0}
+  /* photo envelope */
+  .envelope{position:relative;width:min(96vw,460px);aspect-ratio:1408/768;cursor:pointer;
+    border-radius:8px;overflow:hidden;
+    box-shadow:0 30px 70px rgba(60,56,52,.28);
+    transition:transform 1.6s cubic-bezier(.4,.05,.2,1), opacity 1.2s ease .4s;}
+  .envelope img{width:100%;height:100%;object-fit:cover;display:block}
   .env-hint{position:absolute;left:0;right:0;bottom:-54px;text-align:center;color:var(--gold-deep);
     font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;letter-spacing:.04em;
     animation:pulse 2s ease-in-out infinite}
   @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
 
-  /* OPENING SEQUENCE — flap opens & seal fades, then whole envelope fades to reveal page */
-  .envelope.go .env-flap{transform:rotateX(172deg);z-index:1}
-  .envelope.go .env-seal{opacity:0;transform:translate(-50%,-50%) scale(.6)}
+  /* OPENING — envelope zooms toward viewer (into the seal) and dissolves */
+  .envelope.go{transform:scale(2.6);opacity:0}
+  .envelope.go .env-hint{opacity:0}
 
   /* ---------- MAIN CONTENT ---------- */
   /* floating minimalist botanicals */
@@ -218,25 +186,7 @@
   <!-- ENVELOPE INTRO -->
   <div class="env-stage" id="envStage">
     <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Открыть приглашение">
-      <div class="env-back"></div>
-
-      <!-- front pocket -->
-      <div class="env-front"></div>
-      <div class="env-orn" aria-hidden="true">
-        <svg viewBox="0 0 200 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
-          <path d="M100 6 C90 18 70 18 60 12 M100 6 C110 18 130 18 140 12"/>
-          <path d="M100 6 v22 M100 34 c-6-4-12-4-18 0 M100 34 c6-4 12-4 18 0"/>
-          <path d="M60 12 q-14 2 -22 10 M140 12 q14 2 22 10"/>
-          <circle cx="100" cy="6" r="2.4" fill="currentColor" stroke="none"/>
-        </svg>
-      </div>
-
-      <!-- top flap + wax seal -->
-      <div class="env-flap"></div>
-      <div class="env-seal">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-9.3-9C1 8 3 4 7 4c2 0 3.5 1.2 5 3 1.5-1.8 3-3 5-3 4 0 6 4 4.3 8C19 16.5 12 21 12 21z"/></svg>
-      </div>
-
+      <img src="envelope.jpg" alt="Конверт с печатью">
       <div class="env-hint">Нажмите, чтобы открыть</div>
     </div>
   </div>
@@ -383,7 +333,7 @@
         content.classList.add('show');
         music.classList.add('show');
         initReveal();
-      },1800);
+      },1700);
     }
     env.addEventListener('click',open);
     env.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
