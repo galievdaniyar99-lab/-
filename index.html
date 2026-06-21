@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Приглашение на свадьбу</title>
+<meta property="og:title" content="Приглашение на свадьбу">
+<meta property="og:description" content="Мы приглашаем вас на наше торжество">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blush:#F7EAE6;
+    --blush-2:#F1DCD6;
+    --blush-3:#E8CABF;
+    --rose:#C9928A;
+    --rose-deep:#A76A62;
+    --mauve:#B98A86;
+    --gold:#CDA36B;
+    --gold-deep:#B0894F;
+    --cream:#FCF6F2;
+    --ink:#5E463F;
+    --ink-soft:#8C6F68;
+    --line:rgba(167,106,98,.22);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{font-family:'Jost',sans-serif;color:var(--ink);line-height:1.85;background:var(--blush);overflow-x:hidden;font-weight:300}
+  .wrap{max-width:480px;margin:0 auto;position:relative;min-height:100vh;overflow:hidden;
+    background:radial-gradient(150% 50% at 50% 0%, var(--cream) 0%, var(--blush) 55%, var(--blush-2) 100%);}
+
+  /* ---------- ENVELOPE INTRO ---------- */
+  .env-stage{
+    position:fixed;inset:0;z-index:100;display:grid;place-items:center;
+    background:radial-gradient(120% 80% at 50% 30%, #F7EAE6, #E8CABF);
+    transition:opacity .9s ease, visibility .9s ease;
+  }
+  .env-stage.open{opacity:0;visibility:hidden}
+  .envelope{position:relative;width:min(78vw,330px);aspect-ratio:1.45/1;cursor:pointer;perspective:1200px}
+  .env-body{position:absolute;inset:0;background:linear-gradient(160deg,var(--cream),var(--blush-2));
+    border:1px solid var(--line);border-radius:10px;box-shadow:0 30px 60px rgba(167,106,98,.28);overflow:hidden}
+  /* side triangles */
+  .env-body::before{content:"";position:absolute;inset:0;
+    background:linear-gradient(135deg,transparent 49.6%,rgba(167,106,98,.10) 50%),
+              linear-gradient(225deg,transparent 49.6%,rgba(167,106,98,.10) 50%);}
+  /* bottom flap line */
+  .env-bottom{position:absolute;left:0;right:0;bottom:0;height:62%;
+    background:linear-gradient(180deg,var(--blush-2),var(--blush-3));
+    clip-path:polygon(0 100%,50% 18%,100% 100%);z-index:3}
+  /* letter that slides up */
+  .env-letter{position:absolute;left:7%;right:7%;top:14%;height:74%;background:var(--cream);
+    border:1px solid var(--line);border-radius:8px;z-index:2;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+    box-shadow:0 8px 20px rgba(167,106,98,.12);transition:transform 1s cubic-bezier(.3,.7,.2,1)}
+  .env-letter .mini{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--rose-deep);font-size:clamp(16px,4.6vw,22px)}
+  .env-letter .heart{width:26px;height:26px;color:var(--rose)}
+  /* top flap that opens */
+  .env-flap{position:absolute;left:0;right:0;top:0;height:50%;z-index:4;transform-origin:top center;
+    background:linear-gradient(180deg,var(--blush-2),var(--blush-3));
+    clip-path:polygon(0 0,100% 0,50% 100%);transition:transform 1s ease;backface-visibility:hidden}
+  /* wax seal */
+  .env-seal{position:absolute;left:50%;top:46%;translate:-50% -50%;z-index:6;
+    width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--rose),var(--rose-deep));
+    display:grid;place-items:center;box-shadow:0 6px 16px rgba(167,106,98,.4);transition:opacity .4s}
+  .env-seal svg{width:32px;height:32px;color:var(--cream)}
+  .env-hint{position:absolute;left:0;right:0;bottom:-54px;text-align:center;color:var(--rose-deep);
+    font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;letter-spacing:.04em;
+    animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+
+  /* opening states */
+  .envelope.go .env-flap{transform:rotateX(180deg);z-index:1}
+  .envelope.go .env-seal{opacity:0}
+  .envelope.go .env-letter{transform:translateY(-130%);z-index:7}
+
+  /* ---------- MAIN CONTENT ---------- */
+  .content{position:relative;z-index:2;padding:clamp(40px,9vw,60px) 0 90px;text-align:center;
+    opacity:0;transition:opacity 1s ease .2s}
+  .content.show{opacity:1}
+
+  .sr{opacity:0;transform:translateY(34px);transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1)}
+  .sr.in{opacity:1;transform:translateY(0)}
+  .sr.delay1{transition-delay:.12s}
+
+  .content > :not(.imgband){padding-left:clamp(24px,7vw,42px);padding-right:clamp(24px,7vw,42px)}
+  .eyebrow{font-size:clamp(10px,2.9vw,12px);letter-spacing:.42em;text-transform:uppercase;color:var(--rose-deep);font-weight:400}
+
+  .names{margin:clamp(10px,3vw,18px) 0}
+  .name-line{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;font-size:clamp(48px,16vw,84px);line-height:1.08;color:var(--ink);display:block}
+  .amp{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--rose);font-size:clamp(26px,8vw,42px);display:block;margin:clamp(4px,1.5vw,10px) 0}
+  .date-hero{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(19px,6vw,27px);color:var(--gold-deep);letter-spacing:.1em;margin-top:12px}
+
+  .divider{display:flex;align-items:center;justify-content:center;gap:14px;margin:clamp(34px,9vw,52px) auto;color:var(--rose)}
+  .divider span{height:1px;width:min(80px,22vw);background:linear-gradient(90deg,transparent,var(--rose),transparent)}
+  .divider .dot{width:7px;height:7px;border:1px solid var(--rose-deep);transform:rotate(45deg);flex:none;background:var(--rose)}
+
+  /* full-width image banner (edge to edge) with soft fade */
+  .imgband{position:relative;width:100vw;left:50%;margin-left:-50vw;max-width:480px;
+    margin-right:auto;margin-left:calc(-50vw + 0px);line-height:0;overflow:hidden}
+  /* center the 100vw band within the 480px column */
+  .imgband{left:50%;transform:translateX(-50%);margin-left:0;width:min(100vw,480px)}
+  .imgband img{width:100%;height:auto;display:block}
+  .imgband .ph{width:100%;aspect-ratio:3/2;background:linear-gradient(160deg,var(--blush-2),var(--cream));
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--mauve)}
+  .imgband .ph svg{width:42px;height:42px;opacity:.5}
+  .imgband .ph span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px}
+  /* soft fade top & bottom so banner melts into page */
+  .imgband::before,.imgband::after{content:"";position:absolute;left:0;right:0;height:26%;pointer-events:none;z-index:2}
+  .imgband::before{top:-1px;background:linear-gradient(to top, rgba(247,234,230,0), var(--blush))}
+  .imgband::after{bottom:-1px;background:linear-gradient(to bottom, rgba(247,234,230,0), var(--blush))}
+
+  .invite-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(16px,4.6vw,21px);letter-spacing:.03em;line-height:2.05;color:var(--ink-soft);font-weight:400}
+  .lead{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(16px,4.4vw,18px);line-height:2.05;color:var(--ink-soft);margin-top:clamp(20px,5vw,30px);font-weight:400}
+  .lead b{color:var(--rose-deep);font-weight:600}
+
+  .section-label{font-size:clamp(11px,3.2vw,13px);letter-spacing:.34em;text-transform:uppercase;color:var(--rose-deep);font-weight:400;margin-bottom:clamp(18px,5vw,26px)}
+
+  .hosts-name{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;font-size:clamp(34px,11vw,54px);color:var(--ink);line-height:1.12}
+  .hosts-sub{font-size:clamp(11px,3vw,13px);letter-spacing:.3em;text-transform:uppercase;color:var(--rose-deep);font-weight:400;margin-top:10px}
+
+  .wday .en{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(15px,4vw,18px);letter-spacing:.34em;text-transform:uppercase;color:var(--gold-deep)}
+  .wday .big-date{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(40px,13vw,64px);color:var(--ink);line-height:1.1;margin-top:10px}
+
+  .rsvp{max-width:372px;margin:0 auto;background:var(--cream);border:1px solid var(--line);border-radius:22px;padding:clamp(26px,7vw,34px) clamp(20px,6vw,30px);box-shadow:0 16px 40px rgba(167,106,98,.12)}
+  .rsvp .hint{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(15px,4vw,17px);color:var(--ink-soft);margin-bottom:22px;line-height:1.7}
+  .rsvp input{width:100%;font-family:'Jost';font-size:15px;color:var(--ink);font-weight:300;padding:14px 16px;border:1px solid var(--line);border-radius:13px;background:var(--blush);text-align:center;margin-bottom:16px;outline:none;transition:border-color .2s}
+  .rsvp input:focus{border-color:var(--rose-deep)}
+  .rsvp input::placeholder{color:#C9AEA8}
+  .choices{display:flex;flex-direction:column;gap:11px;margin-bottom:22px}
+  .choice{display:flex;align-items:center;justify-content:center;cursor:pointer;padding:14px;border:1px solid var(--line);border-radius:13px;background:var(--blush);font-size:14px;color:var(--ink-soft);transition:all .2s;user-select:none;text-align:center}
+  .choice input{display:none}
+  .choice:hover{border-color:var(--rose)}
+  .choice.sel{background:linear-gradient(135deg,var(--rose),var(--rose-deep));color:#fff;border-color:var(--rose-deep);box-shadow:0 8px 20px rgba(167,106,98,.3)}
+  .rsvp-send{width:100%;border:none;cursor:pointer;font-family:'Jost';font-weight:500;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,var(--gold),var(--gold-deep));padding:16px;border-radius:13px;transition:transform .2s;box-shadow:0 10px 24px rgba(176,137,79,.3)}
+  .rsvp-send:hover{transform:translateY(-2px)}
+  .rsvp-send:disabled{opacity:.6;cursor:default;transform:none}
+  .rsvp-done{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(18px,5vw,22px);color:var(--rose-deep);line-height:1.6;padding:12px 0}
+  .rsvp-err{color:#B0594A;font-size:13px;margin-top:12px;min-height:18px}
+
+  .countdown{display:flex;justify-content:center;gap:clamp(8px,3vw,16px)}
+  .cd-cell{background:var(--cream);border:1px solid var(--line);border-radius:16px;padding:clamp(12px,3.5vw,18px) clamp(7px,2.5vw,15px);min-width:clamp(62px,19vw,80px);box-shadow:0 8px 24px rgba(167,106,98,.1)}
+  .cd-num{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(30px,9vw,44px);font-weight:500;color:var(--rose-deep);line-height:1}
+  .cd-lbl{font-size:clamp(9px,2.6vw,11px);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin-top:8px}
+
+  .detail{margin:clamp(14px,4vw,20px) 0}
+  .detail .label{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--rose-deep);font-weight:400;margin-bottom:8px}
+  .detail .big{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(26px,7vw,36px);color:var(--ink)}
+  .detail .sub{font-size:clamp(14px,3.8vw,16px);color:var(--ink-soft);margin-top:4px}
+
+  .map-btn{display:inline-flex;align-items:center;gap:10px;margin-top:clamp(18px,5vw,24px);background:linear-gradient(135deg,var(--rose),var(--rose-deep));color:#fff;text-decoration:none;padding:14px 30px;border-radius:999px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;box-shadow:0 10px 26px rgba(167,106,98,.3);transition:transform .25s}
+  .map-btn:hover{transform:translateY(-2px)}
+  .map-btn svg{width:16px;height:16px}
+
+  .footnote{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(20px,5.6vw,28px);color:var(--rose-deep);margin-top:clamp(34px,9vw,50px)}
+  .block{margin-top:clamp(64px,16vw,92px)}
+
+  .music{position:fixed;z-index:30;right:max(16px,calc((100vw - 480px)/2 + 16px));bottom:18px;display:flex;align-items:center;gap:10px;background:rgba(252,246,242,.92);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:999px;padding:8px 16px 8px 9px;cursor:pointer;color:var(--ink);font-size:11px;letter-spacing:.16em;text-transform:uppercase;box-shadow:0 8px 22px rgba(167,106,98,.2);transition:transform .25s;user-select:none;opacity:0;pointer-events:none}
+  .music.show{opacity:1;pointer-events:auto}
+  .ico{width:30px;height:30px;border-radius:50%;flex:none;border:1px solid var(--rose-deep);display:grid;place-items:center;color:var(--rose-deep)}
+  .bars{display:flex;align-items:center;gap:2.5px;height:13px}
+  .bars i{width:2.5px;background:var(--rose-deep);height:4px;border-radius:2px;animation:eq 1s ease-in-out infinite;animation-play-state:paused}
+  .bars i:nth-child(2){animation-delay:.2s}.bars i:nth-child(3){animation-delay:.4s}.bars i:nth-child(4){animation-delay:.15s}
+  .playing .bars i{animation-play-state:running}
+  @keyframes eq{0%,100%{height:4px}50%{height:13px}}
+  .music .play{display:block}.music .pause{display:none}
+  .playing .play{display:none}.playing .pause{display:block}
+
+  @media (prefers-reduced-motion:reduce){.sr{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ENVELOPE INTRO -->
+  <div class="env-stage" id="envStage">
+    <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Открыть приглашение">
+      <div class="env-body">
+        <div class="env-letter">
+          <svg class="heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-9.3-9C1 8 3 4 7 4c2 0 3.5 1.2 5 3 1.5-1.8 3-3 5-3 4 0 6 4 4.3 8C19 16.5 12 21 12 21z"/></svg>
+          <span class="mini">Приглашение</span>
+        </div>
+        <div class="env-bottom"></div>
+        <div class="env-flap"></div>
+        <div class="env-seal">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-9.3-9C1 8 3 4 7 4c2 0 3.5 1.2 5 3 1.5-1.8 3-3 5-3 4 0 6 4 4.3 8C19 16.5 12 21 12 21z"/></svg>
+        </div>
+      </div>
+      <div class="env-hint">Нажмите, чтобы открыть</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="content" id="content">
+
+    <p class="eyebrow sr">Приглашение на свадьбу</p>
+
+    <div class="names sr">
+      <span class="name-line">Имя</span>
+      <span class="amp">&amp;</span>
+      <span class="name-line">Имя</span>
+    </div>
+    <p class="date-hero sr">07 июля 2027</p>
+
+    <div class="divider sr"><span></span><i class="dot"></i><span></span></div>
+
+    <!-- IMAGE BANNER 1: couple -->
+    <div class="imgband sr">
+      <img src="photo1.jpg" alt="Молодожёны" loading="lazy">
+    </div>
+
+    <p class="invite-text sr" style="margin-top:clamp(26px,6vw,36px)">
+      Дорогие родные, близкие и друзья!
+    </p>
+    <p class="lead sr delay1">
+      С большой радостью приглашаем вас разделить с нами
+      самый счастливый день — день нашей свадьбы.
+    </p>
+
+    <!-- WEDDING DAY -->
+    <div class="block sr">
+      <div class="divider"><span></span><i class="dot"></i><span></span></div>
+      <div class="wday">
+        <p class="en">Дата торжества</p>
+        <p class="big-date">07.07.2027</p>
+      </div>
+      <div class="divider"><span></span><i class="dot"></i><span></span></div>
+    </div>
+
+    <!-- IMAGE BANNER 2: hands / rings -->
+    <div class="imgband sr block">
+      <img src="photo2.jpg" alt="Руки" loading="lazy">
+    </div>
+
+    <!-- DETAILS -->
+    <div class="block sr">
+      <div class="detail"><div class="label">Начало</div><div class="big">18:00</div></div>
+      <div class="detail"><div class="label">Место</div><div class="big">Ресторан «Название»</div><div class="sub">Город</div></div>
+      <a class="map-btn" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>
+        Смотреть на карте
+      </a>
+    </div>
+
+    <!-- IMAGE BANNER 3: silhouette -->
+    <div class="imgband sr block">
+      <img src="photo3.jpg" alt="Пара" loading="lazy">
+    </div>
+
+    <!-- IMAGE BANNER 4: venue at night -->
+    <div class="imgband sr block">
+      <img src="photo4.jpg" alt="Торжество" loading="lazy">
+    </div>
+
+    <!-- HOSTS -->
+    <div class="block sr">
+      <div class="divider"><span></span><i class="dot"></i><span></span></div>
+      <p class="hosts-sub">Принимающая сторона</p>
+      <p class="hosts-name">Имя — Имя</p>
+    </div>
+
+    <!-- RSVP -->
+    <div class="block sr">
+      <p class="section-label">Подтвердите присутствие</p>
+      <div class="rsvp" id="rsvp">
+        <p class="hint">Сможете ли вы прийти? Напишите имя и выберите ответ.</p>
+        <input type="text" id="guestName" placeholder="Ваше имя" autocomplete="name">
+        <div class="choices">
+          <label class="choice"><input type="radio" name="answer" value="С радостью приду"><span>С радостью приду</span></label>
+          <label class="choice"><input type="radio" name="answer" value="Приду с супругом(ой)"><span>Приду с супругом(ой)</span></label>
+          <label class="choice"><input type="radio" name="answer" value="К сожалению, не смогу"><span>К сожалению, не смогу</span></label>
+        </div>
+        <button class="rsvp-send" id="rsvpSend">Отправить</button>
+        <div class="rsvp-err" id="rsvpErr"></div>
+      </div>
+    </div>
+
+    <!-- COUNTDOWN -->
+    <div class="block sr">
+      <p class="section-label">До торжества осталось</p>
+      <div class="countdown">
+        <div class="cd-cell"><div class="cd-num" id="cd-d">—</div><div class="cd-lbl">дней</div></div>
+        <div class="cd-cell"><div class="cd-num" id="cd-h">—</div><div class="cd-lbl">часов</div></div>
+        <div class="cd-cell"><div class="cd-num" id="cd-m">—</div><div class="cd-lbl">минут</div></div>
+        <div class="cd-cell"><div class="cd-num" id="cd-s">—</div><div class="cd-lbl">сек</div></div>
+      </div>
+    </div>
+
+    <p class="footnote sr">Будем рады видеть вас!</p>
+
+  </div>
+</div>
+
+<div class="music" id="music" role="button" tabindex="0" aria-label="Включить музыку">
+  <span class="ico">
+    <svg class="play" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+    <svg class="pause" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+  </span>
+  <span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+  <span id="mlabel">Музыка</span>
+</div>
+
+<audio id="audio" src="music.mp3" loop preload="auto"></audio>
+
+<script>
+  var RSVP_URL = "https://script.google.com/macros/s/AKfycby1nKTPl4le-kuUoFMbQBReS08jXYwigsINzX5rW-stoiPRLZxW9N-DU4tWRegH1x_xow/exec";
+
+  /* envelope open */
+  (function(){
+    var stage=document.getElementById('envStage'),env=document.getElementById('envelope'),
+        content=document.getElementById('content'),music=document.getElementById('music'),
+        audio=document.getElementById('audio'),mlabel=document.getElementById('mlabel'),mbtn=document.getElementById('music');
+    var opened=false;
+    function open(){
+      if(opened)return;opened=true;
+      env.classList.add('go');
+      // try to start music on this user gesture
+      audio.play().then(function(){mbtn.classList.add('playing');mlabel.textContent='Играет';}).catch(function(){});
+      setTimeout(function(){
+        stage.classList.add('open');
+        content.classList.add('show');
+        music.classList.add('show');
+        initReveal();
+      },1100);
+    }
+    env.addEventListener('click',open);
+    env.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
+  })();
+
+  function initReveal(){
+    var els=document.querySelectorAll('.sr');
+    if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});return;}
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});
+    },{threshold:.14,rootMargin:'0px 0px -8% 0px'});
+    els.forEach(function(e){io.observe(e)});
+  }
+
+  /* countdown */
+  (function(){
+    var target=new Date('2027-07-07T18:00:00+05:00').getTime();
+    var dD=document.getElementById('cd-d'),dH=document.getElementById('cd-h'),dM=document.getElementById('cd-m'),dS=document.getElementById('cd-s');
+    function pad(n){return String(n).padStart(2,'0')}
+    function tick(){
+      var diff=target-Date.now();
+      if(diff<=0){dD.textContent=dH.textContent=dM.textContent=dS.textContent='0';return;}
+      var s=Math.floor(diff/1000);
+      dD.textContent=Math.floor(s/86400);
+      dH.textContent=pad(Math.floor(s%86400/3600));
+      dM.textContent=pad(Math.floor(s%3600/60));
+      dS.textContent=pad(s%60);
+    }
+    tick();setInterval(tick,1000);
+  })();
+
+  /* rsvp */
+  (function(){
+    var nameI=document.getElementById('guestName'),send=document.getElementById('rsvpSend'),
+        err=document.getElementById('rsvpErr'),box=document.getElementById('rsvp'),choices=document.querySelectorAll('.choice');
+    choices.forEach(function(el){el.addEventListener('click',function(){
+      choices.forEach(function(c){c.classList.remove('sel')});el.classList.add('sel');el.querySelector('input').checked=true;err.textContent='';
+    });});
+    send.addEventListener('click',function(){
+      var name=nameI.value.trim();var picked=document.querySelector('input[name="answer"]:checked');
+      if(!name){err.textContent='Напишите ваше имя';nameI.focus();return;}
+      if(!picked){err.textContent='Выберите ответ';return;}
+      err.textContent='';send.disabled=true;send.textContent='Отправляем…';
+      fetch(RSVP_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body:JSON.stringify({name:name,answer:picked.value})
+      }).then(function(){box.innerHTML='<div class="rsvp-done">Спасибо! Ваш ответ принят.<br>До встречи на торжестве!</div>';})
+       .catch(function(){send.disabled=false;send.textContent='Отправить';err.textContent='Ошибка. Попробуйте ещё раз.';});
+    });
+  })();
+
+  /* music toggle */
+  (function(){
+    var audio=document.getElementById('audio'),btn=document.getElementById('music'),label=document.getElementById('mlabel');
+    btn.addEventListener('click',function(){
+      if(audio.paused){audio.play().then(function(){btn.classList.add('playing');label.textContent='Играет';}).catch(function(){});}
+      else{audio.pause();btn.classList.remove('playing');label.textContent='Музыка';}
+    });
+  })();
+</script>
+</body>
+</html>
